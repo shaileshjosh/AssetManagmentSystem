@@ -14,8 +14,7 @@ public class EmailService {
 	 
 	    @Value("${spring.mail.username}") private String sender;
 	 
-	    // Method 1
-	    // To send a simple email
+	    // To send a simple email to employee with user name and password;
 	    public String sendSimpleMail(EmailDetails details)
 	    {
 	 

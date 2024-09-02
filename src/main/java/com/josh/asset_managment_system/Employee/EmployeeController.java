@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.josh.asset_managment_system.Asset.Asset;
 import com.josh.asset_managment_system.Asset.AssetService;
+import com.josh.asset_managment_system.AssetRequest.AssetRequest;
 import com.josh.asset_managment_system.AssetRequest.AssetRequestService;
 
 @RestController
@@ -28,20 +29,36 @@ AssetService assetService = new AssetService();
 @Autowired(required=false)
 EmployeeService employeeService;
 
+//************ Asset Request Table**********//
+
 @PostMapping("/createAssetRequest")
-void createRequest(@RequestParam String userName,@RequestParam Integer assetId){
-	assetRequestService.createAssetRequest(userName, assetId);
+String createRequest(@RequestParam String userName,@RequestParam Integer assetId){
+	return assetRequestService.createAssetRequest(userName, assetId);
 }
+
+@GetMapping("/getAllAssetRequest/empId={empId}")
+List<AssetRequest> getAllAssetRequest(@PathVariable Integer empId){
+	return assetRequestService.getAllAssetRequestForEmployee(empId);
+}
+
+
+//************ Asset Table **********//
 
 @GetMapping("/getAllAssets/empId={empId}")
-List<Asset> getAllAssets(@PathVariable String empId){
-	return assetService.getEmployeeAssets(Integer.parseInt(empId));
+String getAllAssets(@PathVariable String empId){
+	if ( assetService.getEmployeeAssets(Integer.parseInt(empId)).isEmpty()) {
+		return  "No assets allocated yet";
+	}else {
+		return  assetService.getEmployeeAssets(Integer.parseInt(empId)).toString();
+	}
+	
 }
 
+// ********* Employee Table********
 
 @PostMapping("/updateProfile")
-void createRequest(@RequestParam String userName,@RequestParam String empName,@RequestParam String password){
-	employeeService.updateEmployeeProfile(userName,empName, password);
+String createRequest(@RequestParam String userName,@RequestParam String empName,@RequestParam String password){
+	return employeeService.updateEmployeeProfile(userName,empName, password);
 }
 	
 }

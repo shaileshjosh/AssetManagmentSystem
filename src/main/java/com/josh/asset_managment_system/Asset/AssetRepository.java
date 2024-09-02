@@ -8,6 +8,8 @@ import org.springframework.data.jpa.repository.Query;
 
 
 public interface AssetRepository extends JpaRepository<Asset,Integer> {
+	
+	// get assets from database based on employee id;
 	@Query(value = "SELECT asset FROM Asset asset WHERE asset.emp_id  = :empId")
 	 Optional<List<Asset>> findByEmployeeId(Integer empId);
 }

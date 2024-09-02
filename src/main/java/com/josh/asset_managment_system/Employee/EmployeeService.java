@@ -33,15 +33,24 @@ public class EmployeeService {
 	        return employeeRepository.findAll();
 	  }
 	 
-	 //update  employee profile.
-	 public void updateEmployeeProfile(String userName,String empName,String password){
+	 //update  employee profile.called by employee only
+	 public String updateEmployeeProfile(String userName,String empName,String password){
 	       Employee emp = employeeRepository.findByEmployeeName(userName).orElseThrow(() ->
 	       	new RecordNotFoundException("Employee not found")
      );
-	       
 	       emp.setEmpName(empName);
 	       emp.setPassword(password);
 	       employeeRepository.save(emp);
+	       return "Profile updated successfully";
+	 }
+	 
+	 //update  employee profile.called by employee only
+	 public Employee getEmployee(String userName){
+	       Employee emp = employeeRepository.findByEmployeeName(userName).orElseThrow(() ->
+	       	new RecordNotFoundException("Employee not found")
+     );
+	     
+	       return emp;
 	 }
 	 
 }

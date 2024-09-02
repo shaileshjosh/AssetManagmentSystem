@@ -19,6 +19,14 @@ public class AssetRequest {
 
 
 
+	public Integer getRequest_id() {
+		return request_id;
+	}
+
+	public void setRequest_id(Integer request_id) {
+		this.request_id = request_id;
+	}
+
 	public void setEmp_id(Integer emp_id) {
 		this.emp_id = emp_id;
 	}

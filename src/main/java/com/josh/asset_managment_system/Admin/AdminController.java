@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.josh.asset_managment_system.Employee.*;
 import com.josh.asset_managment_system.Asset.*;
+import com.josh.asset_managment_system.AssetRequest.AssetRequest;
+import com.josh.asset_managment_system.AssetRequest.AssetRequestService;
 
 @RestController
 @RequestMapping("/admin")
@@ -26,11 +28,16 @@ public class AdminController {
 	
 	@Autowired
     private EmailService emailService = new EmailService();
+	
+	@Autowired
+    private AssetRequestService assetRequestService = new AssetRequestService();
     
     @GetMapping("/home")
     String welcomeAdmin(){
         return "Welcome Admin";
     }
+    
+    // *********************   Employee API's ******************//
     
     @PostMapping("/createEmployee")
     public String createEmployee(@RequestParam String userName, @RequestParam String employeeName, @RequestParam String password) {
@@ -64,6 +71,10 @@ public class AdminController {
         return employeeService.getAllEmployeeList();
     }
     
+    
+    
+    // *********************   Asset API's ******************//
+    
     @GetMapping("/getAssetList")
     public List<Asset> getAssetList() {
         return assetService.getAllAssets();
@@ -83,7 +94,27 @@ public class AdminController {
     
     @PostMapping("/allocateAsset")
     public String updateAsset(@RequestParam Integer assetId,@RequestParam Integer empId) {
-        return assetService.updateAsset(assetId, empId);
+        return assetService.allocateAsset(assetId, empId);
+    }
+    
+    @PostMapping("/updateAssetName")
+    public String updateAssetName(@RequestParam Integer assetId,@RequestParam String assetName) {
+        return assetService.updateAsset(assetId, assetName);
+    }
+    
+    
+    
+    // *********************   Asset List API's ******************//
+    
+    @GetMapping("/getAssetRequestList")
+    public List<AssetRequest> getAssetRequestList() {
+    //	return "Emplty";
+        return assetRequestService.getAllAssetRequests();
+    }
+    
+    @PostMapping("/changeAssetRequestStatus")
+    public String changeAssetRequestStatus(@RequestParam Integer requestId,@RequestParam String status) {
+        return assetRequestService.changeAssetRequestStatus(requestId,status);
     }
     
 }

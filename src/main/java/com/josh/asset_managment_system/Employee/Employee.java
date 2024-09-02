@@ -2,6 +2,7 @@ package com.josh.asset_managment_system.Employee;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.josh.asset_managment_system.Asset.Asset;
 
 import jakarta.persistence.CascadeType;
@@ -35,11 +36,12 @@ public class Employee {
     @Column(name = "user_name", length = 45)
     private String user_name;
     
+    @JsonIgnore
     @Column(name = "password", length = 45)
     private String password;
     
     
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "emp_id")
     private List<Asset> assetList;
     

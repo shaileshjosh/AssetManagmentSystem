@@ -12,28 +12,30 @@ public class AssetService {
     @Autowired
     private AssetRepository assetRepository;
 
+    
+    //create asset record in the database. this is called by admin
     public Asset createAsset(String name){
         Asset asset= new Asset();
         asset.setAssetName(name);
         return assetRepository.save(asset);
     }
 
+    //get all assets from database. this is called by admin.
     public List<Asset> getAllAssets() {
         return assetRepository.findAll();
     }
 
-    public String DeleteAllAsset() {
-        assetRepository.deleteAll();
-        return "All Assets deleted successfully";
-    }
-    public String updateAsset(Integer assetId,Integer emp) {
+    //allocate asset to the employee. this is called by admin.
+    public String allocateAsset(Integer assetId,Integer emp) {
 
         Optional<Asset> dbAsset = assetRepository.findById(assetId);
         Asset asset = dbAsset.get();
         asset.setEmp_id(emp);
         assetRepository.save(asset);
-        return "Assets updated successfully";
+        return "Asset updated successfully";
     }
+    
+  //get allocated assets to specific employee. this is called by employee.
     
     public List<Asset> getEmployeeAssets(Integer empId) {
 
@@ -43,6 +45,8 @@ public class AssetService {
         return assetList;
     }
     
+  //delete asset record from database. this is called by admin.
+    
     public String deleteAsset(Integer assetId) {
 
         Optional<Asset> dbAsset = assetRepository.findById(assetId);
@@ -50,5 +54,17 @@ public class AssetService {
        
         assetRepository.delete(asset);
         return "Assets deleted successfully";
+    }
+    
+    
+    //update asset record from database. this is called by admin.
+    
+    public String updateAsset(Integer assetId,String assetName) {
+
+        Optional<Asset> dbAsset = assetRepository.findById(assetId);
+        Asset asset = dbAsset.get();
+        asset.setAssetName(assetName);
+        assetRepository.save(asset);
+        return "Asset updated successfully";
     }
 }

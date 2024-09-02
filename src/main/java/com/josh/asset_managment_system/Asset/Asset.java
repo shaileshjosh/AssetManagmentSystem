@@ -48,6 +48,12 @@ public class Asset {
 	public void setAssetName(String assetName) {
 		this.assetName = assetName;
 	}
+
+	@Override
+	public String toString() {
+		return "Allocated asset is asset_id=" + asset_id + ", assetName=" + assetName;
+	}
+	
 	
 	
 
