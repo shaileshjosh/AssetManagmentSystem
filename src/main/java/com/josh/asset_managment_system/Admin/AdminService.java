@@ -10,4 +10,5 @@ import com.josh.asset_managment_system.Asset.AssetRepository;
 
 public class AdminService {
 	
+	
 }

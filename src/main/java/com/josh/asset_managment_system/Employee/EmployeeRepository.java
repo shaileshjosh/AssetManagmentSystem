@@ -8,11 +8,9 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface EmployeeRepository extends JpaRepository<Employee,Integer> {
-	//Optional<Employee> findByEmployeeName(String userName);
+	//Get employees by there username
 		@Query(value = "SELECT emp FROM Employee emp WHERE emp.user_name  = :userName")
 		 Optional<Employee> findByEmployeeName(String userName);
-     //JPQL
-  //   @Query("SELECT FROM Employee p WHERE p.userName = ?")
-  //   Optional<Employee> findByEmployeeName(String userName);
+   
 
 }

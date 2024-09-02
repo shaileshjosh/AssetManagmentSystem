@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -72,6 +73,13 @@ public class AdminController {
     public Asset createAsset(@RequestParam String assetName) {
         return assetService.createAsset(assetName);
     }
+    
+    @DeleteMapping("/deleteAsset/assetId={assetId}")
+    public String deleteAsset(@PathVariable Integer assetId) {
+        return assetService.deleteAsset(assetId);
+    }
+    
+    
     
     @PostMapping("/allocateAsset")
     public String updateAsset(@RequestParam Integer assetId,@RequestParam Integer empId) {
