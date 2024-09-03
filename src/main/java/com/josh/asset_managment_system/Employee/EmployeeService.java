@@ -3,6 +3,7 @@ package com.josh.asset_managment_system.Employee;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.josh.asset_managment_system.exception.RecordNotFoundException;
@@ -11,12 +12,15 @@ import com.josh.asset_managment_system.exception.RecordNotFoundException;
 public class EmployeeService {
     @Autowired
     private EmployeeRepository employeeRepository;
+    
+    @Autowired
+	private BCryptPasswordEncoder encoder;
 	
     //called by admin to create employee.
 	 public Employee createEmployee(String name,String userName,String password){
 	       Employee emp = new Employee();
 	       emp.setEmpName(name);
-	       emp.setPassword(password);
+	       emp.setPassword(encoder.encode(password));
 	       emp.setUserName(userName);
 	       return employeeRepository.save(emp);
 	    }
@@ -39,7 +43,7 @@ public class EmployeeService {
 	       	new RecordNotFoundException("Employee not found")
      );
 	       emp.setEmpName(empName);
-	       emp.setPassword(password);
+	       emp.setPassword(encoder.encode(password));
 	       employeeRepository.save(emp);
 	       return "Profile updated successfully";
 	 }

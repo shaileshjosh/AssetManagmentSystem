@@ -1,8 +1,11 @@
 package com.josh.asset_managment_system.Admin;
 
+
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,6 +15,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.josh.asset_managment_system.Employee.*;
+
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+
 import com.josh.asset_managment_system.Asset.*;
 import com.josh.asset_managment_system.AssetRequest.AssetRequest;
 import com.josh.asset_managment_system.AssetRequest.AssetRequestService;
@@ -103,12 +112,10 @@ public class AdminController {
     }
     
     
-    
     // *********************   Asset List API's ******************//
     
     @GetMapping("/getAssetRequestList")
     public List<AssetRequest> getAssetRequestList() {
-    //	return "Emplty";
         return assetRequestService.getAllAssetRequests();
     }
     
@@ -116,5 +123,6 @@ public class AdminController {
     public String changeAssetRequestStatus(@RequestParam Integer requestId,@RequestParam String status) {
         return assetRequestService.changeAssetRequestStatus(requestId,status);
     }
+
     
 }
