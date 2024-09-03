@@ -1,20 +1,18 @@
 package com.josh.asset_managment_system;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import java.beans.Customizer;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-
+import static org.springframework.security.config.Customizer.withDefaults;
 import com.josh.asset_managment_system.Admin.AdminService;
 
 
@@ -43,19 +41,30 @@ public class AppConfig{
 	
 
 	    @Bean
-	    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+	    public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
 	    	
-
+	    	  http.csrf(AbstractHttpConfigurer::disable).authorizeHttpRequests(request -> {
+	    	      request.requestMatchers("/admin/**").hasRole("ADMIN")
+	  	    	.requestMatchers("/employee/**").hasRole("EMPLOYEE")
+		    	.requestMatchers("/**").permitAll()
+		    	.requestMatchers("/auth/login").permitAll()
+		    	.anyRequest().authenticated();
+	    	           
+	    	 }).formLogin(config -> config //
+	                    .usernameParameter("username") //
+	                    .passwordParameter("password") //
+	            );
+            
 	    	
-	    	http.csrf().disable()
-	    	.authorizeHttpRequests()
-	    	.requestMatchers("/admin/**").hasRole("ADMIN")
-	    	.requestMatchers("/employee/**").hasRole("EMPLOYEE")
-	    	.requestMatchers("/**").permitAll()
-	    	.requestMatchers("/auth/login").permitAll()
-	    	.anyRequest().authenticated()
-	    	.and()
-	    	.formLogin();
+//	    	http.csrf().disable()
+//	    	.authorizeHttpRequests()
+//	    	.requestMatchers("/admin/**").hasRole("ADMIN")
+//	    	.requestMatchers("/employee/**").hasRole("EMPLOYEE")
+//	    	.requestMatchers("/**").permitAll()
+//	    	.requestMatchers("/auth/login").permitAll()
+//	    	.anyRequest().authenticated()
+//	    	.and()
+//	    	.formLogin();
 	    	
 	    	return http.build();
 	    	

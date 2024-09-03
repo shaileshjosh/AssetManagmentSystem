@@ -41,11 +41,6 @@ public class AdminController {
 	@Autowired
     private AssetRequestService assetRequestService = new AssetRequestService();
     
-    @GetMapping("/home")
-    String welcomeAdmin(){
-        return "Welcome Admin";
-    }
-    
     // *********************   Employee API's ******************//
     
     @PostMapping("/createEmployee")
