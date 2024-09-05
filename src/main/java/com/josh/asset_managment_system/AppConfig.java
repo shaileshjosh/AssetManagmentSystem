@@ -1,7 +1,5 @@
 package com.josh.asset_managment_system;
 
-import java.beans.Customizer;
-
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -12,7 +10,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import static org.springframework.security.config.Customizer.withDefaults;
 import com.josh.asset_managment_system.Admin.AdminService;
 
 
@@ -55,16 +52,6 @@ public class AppConfig{
 	                    .passwordParameter("password") //
 	            );
             
-	    	
-//	    	http.csrf().disable()
-//	    	.authorizeHttpRequests()
-//	    	.requestMatchers("/admin/**").hasRole("ADMIN")
-//	    	.requestMatchers("/employee/**").hasRole("EMPLOYEE")
-//	    	.requestMatchers("/**").permitAll()
-//	    	.requestMatchers("/auth/login").permitAll()
-//	    	.anyRequest().authenticated()
-//	    	.and()
-//	    	.formLogin();
 	    	
 	    	return http.build();
 	    	

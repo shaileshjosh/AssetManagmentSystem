@@ -17,12 +17,10 @@ public class EmployeeService {
 	private BCryptPasswordEncoder encoder;
 	
     //called by admin to create employee.
-	 public Employee createEmployee(String name,String userName,String password){
-	       Employee emp = new Employee();
-	       emp.setEmpName(name);
-	       emp.setPassword(encoder.encode(password));
-	       emp.setUserName(userName);
-	       return employeeRepository.save(emp);
+	 public Employee createEmployee(Employee employee){
+		 System.out.println(employee.getPassword());
+	       employee.setPassword(encoder.encode(employee.getPassword()));
+	       return employeeRepository.save(employee);
 	    }
 	 //delete employee from db
 	 public void deleteEmployee(String userName){
@@ -38,12 +36,19 @@ public class EmployeeService {
 	  }
 	 
 	 //update  employee profile.called by employee only
-	 public String updateEmployeeProfile(String userName,String empName,String password){
-	       Employee emp = employeeRepository.findByEmployeeName(userName).orElseThrow(() ->
+	 public String updateEmployeeProfile(Employee requestEmp){
+	       Employee emp = employeeRepository.findByEmployeeName(requestEmp.getUserName()).orElseThrow(() ->
 	       	new RecordNotFoundException("Employee not found")
      );
-	       emp.setEmpName(empName);
-	       emp.setPassword(encoder.encode(password));
+	       
+	       if (requestEmp.getEmpName() != null && !requestEmp.getEmpName().equals(emp.getEmpName())) {
+	    	   emp.setEmpName(requestEmp.getEmpName());
+	       }
+	       
+	       if (requestEmp.getPassword() != null) {
+	    	   emp.setPassword(encoder.encode(requestEmp.getPassword()));
+	       }
+	       
 	       employeeRepository.save(emp);
 	       return "Profile updated successfully";
 	 }

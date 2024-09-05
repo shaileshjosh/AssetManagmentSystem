@@ -6,39 +6,37 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import lombok.Getter;
-import lombok.Setter;
 
-@Getter
-@Setter
+
 @Entity
 @Table(name = "Assets", schema = "AssetSystem")
 public class Asset {
 	@Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
-    private Integer asset_id;
+	 @Column(name = "asset_id")
+    private Integer assetId;
 
     @Column(name = "asset_name", length = 45)
     private String assetName;
     
     @Column(name = "emp_id", length = 45)
-    private Integer emp_id;
+    private Integer empId;
 
 
-	public Integer getEmp_id() {
-		return emp_id;
+	public Integer getEmpId() {
+		return empId;
 	}
 
-	public Integer getAsset_id() {
-		return asset_id;
+	public Integer getAssetId() {
+		return assetId;
 	}
 
-	public void setAsset_id(Integer asset_id) {
-		this.asset_id = asset_id;
+	public void setAssetId(Integer assetId) {
+		this.assetId = assetId;
 	}
 
-	public void setEmp_id(Integer emp_id) {
-		this.emp_id = emp_id;
+	public void setEmpId(Integer empId) {
+		this.empId = empId;
 	}
 
 	public String getAssetName() {
@@ -49,12 +47,5 @@ public class Asset {
 		this.assetName = assetName;
 	}
 
-	@Override
-	public String toString() {
-		return "Allocated asset is asset_id=" + asset_id + ", assetName=" + assetName;
-	}
-	
-	
-	
 
 }

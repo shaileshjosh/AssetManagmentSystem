@@ -38,7 +38,7 @@ public class EmailService {
 	 
 	        // Catch block to handle the exceptions
 	        catch (Exception e) {
-	            return e.getMessage();
+	            return "Unable to send email,Please try again";
 	        }
 	    }
  

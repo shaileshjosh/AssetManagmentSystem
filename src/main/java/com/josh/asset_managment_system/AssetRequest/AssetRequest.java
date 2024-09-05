@@ -6,8 +6,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import lombok.Getter;
-import lombok.Setter;
 
 @Entity
 @Table(name = "AssetRequest", schema = "AssetSystem")
@@ -15,50 +13,51 @@ public class AssetRequest {
 	
 	@Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
-    private Integer request_id;
-
-
-
-	public Integer getRequest_id() {
-		return request_id;
-	}
-
-	public void setRequest_id(Integer request_id) {
-		this.request_id = request_id;
-	}
-
-	public void setEmp_id(Integer emp_id) {
-		this.emp_id = emp_id;
-	}
+	 @Column(name = "request_id")
+    private Integer requestId;
 
 	@Column(name = "asset_id", nullable = false)
-    private Integer asset_id;
+    private Integer assetId;
     
     @Column(name = "allocation_status", length = 45)
-    private String allocation_status;
+    private String allocationStatus;
     
     @Column(name = "emp_id", nullable = false)
-    private Integer emp_id;
+    private Integer empId;
     
+
+	public Integer getRequestId() {
+		return requestId;
+	}
+
+	public void setRequestId(Integer requestId) {
+		this.requestId = requestId;
+	}
+
+	public void setEmpId(Integer empId) {
+		this.empId = empId;
+	}
+
+	
     
-    public Integer getAsset_id() {
-		return asset_id;
+    public Integer getAssetId() {
+		return assetId;
 	}
 
-	public void setAsset_id(Integer asset_id) {
-		this.asset_id = asset_id;
+	public void setAssetId(Integer assetId) {
+		this.assetId = assetId;
 	}
 
-	public String getAllocation_status() {
-		return allocation_status;
+	public String getAllocationStatus() {
+		return allocationStatus;
 	}
 
-	public void setAllocation_status(String allocation_status) {
-		this.allocation_status = allocation_status;
+	public void setAllocationStatus(String allocationStatus) {
+		this.allocationStatus = allocationStatus;
 	}
 
-	public Integer getEmp_id() {
-		return emp_id;
+	public Integer getEmpId() {
+		return empId;
 	}
 
 }

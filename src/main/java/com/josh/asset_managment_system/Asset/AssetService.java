@@ -6,11 +6,18 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
+
+import com.josh.asset_managment_system.Employee.Employee;
+import com.josh.asset_managment_system.Employee.EmployeeRepository;
+import com.josh.asset_managment_system.exception.RecordNotFoundException;
 @Service
 @Component
 public class AssetService {
     @Autowired
     private AssetRepository assetRepository;
+    
+    @Autowired
+    private EmployeeRepository employeeRepository;
 
     
     //create asset record in the database. this is called by admin
@@ -26,19 +33,22 @@ public class AssetService {
     }
 
     //allocate asset to the employee. this is called by admin.
-    public String allocateAsset(Integer assetId,Integer emp) {
+    public String allocateAsset(Asset requestAsset) {
 
-        Optional<Asset> dbAsset = assetRepository.findById(assetId);
-        Asset asset = dbAsset.get();
-        asset.setEmp_id(emp);
+    	Asset asset = assetRepository.findById(requestAsset.getAssetId()).orElseThrow(() ->
+       	new RecordNotFoundException("Asset not found"));
+    	
+        asset.setEmpId(requestAsset.getEmpId());
         assetRepository.save(asset);
-        return "Asset updated successfully";
+        return "Asset allocated successfully";
     }
     
   //get allocated assets to specific employee. this is called by employee.
     
     public List<Asset> getEmployeeAssets(Integer empId) {
-
+    	 Employee emp = employeeRepository.findById(empId).orElseThrow(() ->
+	       	new RecordNotFoundException("Employee not found")
+  );
         Optional<List<Asset>> dbAssetList = assetRepository.findByEmployeeId(empId);
         List<Asset> assetList = dbAssetList.get();
     
@@ -47,24 +57,32 @@ public class AssetService {
     
   //delete asset record from database. this is called by admin.
     
-    public String deleteAsset(Integer assetId) {
+    public void deleteAsset(Integer assetId) {
 
         Optional<Asset> dbAsset = assetRepository.findById(assetId);
         Asset asset = dbAsset.get();
-       
         assetRepository.delete(asset);
-        return "Assets deleted successfully";
     }
     
     
     //update asset record from database. this is called by admin.
     
-    public String updateAsset(Integer assetId,String assetName) {
-
-        Optional<Asset> dbAsset = assetRepository.findById(assetId);
-        Asset asset = dbAsset.get();
-        asset.setAssetName(assetName);
+    public String updateAsset(Asset requestAsset) {
+    	
+    	Asset asset = assetRepository.findById(requestAsset.getAssetId()).orElseThrow(() ->
+       	new RecordNotFoundException("Asset not found"));
+        asset.setAssetName(requestAsset.getAssetName());
         assetRepository.save(asset);
         return "Asset updated successfully";
+    }
+    
+ //update asset record from database. this is called by admin.
+    
+    public List<Asset> searchAssets(String assetName) {
+
+        Optional<List<Asset>> dbAssetList = assetRepository.findByAssetName(assetName);
+        List<Asset> assetList = dbAssetList.get();
+        
+        return assetList;
     }
 }

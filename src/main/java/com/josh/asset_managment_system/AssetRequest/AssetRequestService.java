@@ -1,18 +1,14 @@
 package com.josh.asset_managment_system.AssetRequest;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import com.josh.asset_managment_system.Asset.Asset;
-import com.josh.asset_managment_system.Asset.AssetRepository;
 import com.josh.asset_managment_system.Asset.AssetService;
 import com.josh.asset_managment_system.Employee.Employee;
-import com.josh.asset_managment_system.Employee.EmployeeRepository;
 import com.josh.asset_managment_system.Employee.EmployeeService;
 import com.josh.asset_managment_system.exception.RecordNotFoundException;
 
@@ -50,9 +46,9 @@ public class AssetRequestService {
 		 		 return "You already created request for this asset";
 		 	} else {
 		 	 	AssetRequest assetReq= new AssetRequest();
-			  	assetReq.setAllocation_status("Pending");
-			  	assetReq.setAsset_id(assetId);
-			  	assetReq.setEmp_id(emp.getEmpId());
+			  	assetReq.setAllocationStatus("Pending");
+			  	assetReq.setAssetId(assetId);
+			  	assetReq.setEmpId(emp.getEmpId());
 		        assetRequestRepository.save(assetReq);
 		        return "Asset Request created successfully";
 		 	}
@@ -61,15 +57,18 @@ public class AssetRequestService {
 	 }
 	 
 	//this will be called by admin to allocate asset
-	    public String changeAssetRequestStatus(Integer requestId,String status) {
+	    public String changeAssetRequestStatus(AssetRequest request) {
 	    	
-	    	 AssetRequest assetRequest = assetRequestRepository.findById(requestId).orElseThrow(() ->
+	    	 AssetRequest assetRequest = assetRequestRepository.findById(request.getRequestId()).orElseThrow(() ->
 		       	new RecordNotFoundException("Request not found")
 	     );
 	    	 
-	    	 assetRequest.setAllocation_status(status);
-	    	 if(status.equals("Allocated")) {
-	    		 assetService.allocateAsset(assetRequest.getAsset_id(),assetRequest.getEmp_id());
+	    	 assetRequest.setAllocationStatus(request.getAllocationStatus());
+	    	 if(request.getAllocationStatus().equals("Allocated")) {
+	    		 Asset asset = new Asset();
+	    		 asset.setAssetId(assetRequest.getAssetId());
+	    		 asset.setEmpId(assetRequest.getEmpId());
+	    		 assetService.allocateAsset(asset);
 	    	 }
 	    	
 	        return "Assets request updated successfully";

@@ -15,20 +15,18 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import lombok.Getter;
-import lombok.Setter;
 
-@Getter
-@Setter
+
 @Entity
 @Table(name = "Employee", schema = "AssetSystem")
 public class Employee {
 	
-    @Id
+
+	@Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     
     @Column(name = "emp_id", nullable = false)
-    private Integer emp_id;
+    private Integer empId;
 
     @Column(name = "emp_name", length = 45)
     private String emp_name;
@@ -36,7 +34,7 @@ public class Employee {
     @Column(name = "user_name", length = 45)
     private String user_name;
     
-    @JsonIgnore
+
     @Column(name = "password", length = 45)
     private String password;
     
@@ -47,11 +45,11 @@ public class Employee {
     
 
 	public Integer getEmpId() {
-		return emp_id;
+		return empId;
 	}
 
 	public void setEmpId(Integer empId) {
-		this.emp_id = empId;
+		this.empId = empId;
 	}
 
 	public String getEmpName() {

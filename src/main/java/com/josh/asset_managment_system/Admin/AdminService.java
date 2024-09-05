@@ -11,7 +11,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.josh.asset_managment_system.AppConfig;
 import com.josh.asset_managment_system.CustomAdmin;
 import com.josh.asset_managment_system.Employee.Employee;
 import com.josh.asset_managment_system.Employee.EmployeeRepository;
