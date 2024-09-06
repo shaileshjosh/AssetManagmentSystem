@@ -37,13 +37,18 @@ public class AssetRequestService {
 	public String createAssetRequest(String userName,Integer assetId){
 		
 		Employee emp = employeeService.getEmployee(userName);
-		 	
-		 AssetRequest  assetRequest = assetRequestRepository.findByEmployeeIdAndAssetId(emp.getEmpId(),assetId);
+		
+		Asset asset = assetService.getAssetsById(assetId);
 		
 		 	
-		 	
-		 	if (assetRequest != null) {
+		 AssetRequest assetRequest = assetRequestRepository.findByEmployeeIdAndAssetId(emp.getEmpId(),assetId);
+		
+		 	System.out.print(assetRequest.toString()+ "is present" );
+		 
+		 	if (assetRequest != null && assetRequest.getAllocationStatus().equals("Pending")) {
 		 		 return "You already created request for this asset";
+		 	}if ((assetRequest != null && assetRequest.getAllocationStatus().equals("Allocated")) || (asset.getEmpId() != null)) {
+		 		 return "This asset is already allocated";
 		 	} else {
 		 	 	AssetRequest assetReq= new AssetRequest();
 			  	assetReq.setAllocationStatus("Pending");
@@ -63,13 +68,23 @@ public class AssetRequestService {
 		       	new RecordNotFoundException("Request not found")
 	     );
 	    	 
+	    	 if (assetRequest.getAllocationStatus().equals("Allocated") && request.getAllocationStatus().equals("Allocated")) {
+	    		  return "Asset already allocated";
+	    	 }
+	    	 
 	    	 assetRequest.setAllocationStatus(request.getAllocationStatus());
+	    	
 	    	 if(request.getAllocationStatus().equals("Allocated")) {
 	    		 Asset asset = new Asset();
 	    		 asset.setAssetId(assetRequest.getAssetId());
 	    		 asset.setEmpId(assetRequest.getEmpId());
-	    		 assetService.allocateAsset(asset);
+	    		boolean result  =  assetService.allocateAsset(asset);
+	    		if (result == false) {
+	    			return "Asset already allocated";
+	    		}
 	    	 }
+	    	 
+	    	 assetRequestRepository.save(assetRequest);
 	    	
 	        return "Assets request updated successfully";
 	    }
@@ -78,6 +93,8 @@ public class AssetRequestService {
 		 //This method will be used by employee to get all asset requests.
 		 
 		public List<AssetRequest> getAllAssetRequestForEmployee(Integer empId){
+			
+			employeeService.getEmployeeById(empId);
 			
 			  List<AssetRequest> assetRequestList = assetRequestRepository.findByEmployeeId(empId);
 		    

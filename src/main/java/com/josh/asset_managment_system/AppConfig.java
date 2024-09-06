@@ -1,5 +1,6 @@
 package com.josh.asset_managment_system;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -27,6 +28,10 @@ public class AppConfig{
 		
 	}
 	
+	@Autowired
+    private CustomSuccessHandler customSuccessHandler;
+
+	
 	@Bean
     public AuthenticationProvider authenticationProvider() {
 		DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
@@ -45,11 +50,13 @@ public class AppConfig{
 	  	    	.requestMatchers("/employee/**").hasRole("EMPLOYEE")
 		    	.requestMatchers("/**").permitAll()
 		    	.requestMatchers("/auth/login").permitAll()
+		    	
 		    	.anyRequest().authenticated();
 	    	           
 	    	 }).formLogin(config -> config //
 	                    .usernameParameter("username") //
 	                    .passwordParameter("password") //
+	                    .successHandler(customSuccessHandler)
 	            );
             
 	    	

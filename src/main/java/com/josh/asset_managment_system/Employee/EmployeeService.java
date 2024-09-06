@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.josh.asset_managment_system.Asset.Asset;
 import com.josh.asset_managment_system.exception.RecordNotFoundException;
 
 @Service
@@ -61,5 +62,13 @@ public class EmployeeService {
 	     
 	       return emp;
 	 }
+	 
+	//get single asset to check asset exist. this is called by employee.
+	    
+	    public void getEmployeeById(Integer empId) {
+	    	 Employee employee = employeeRepository.findById(empId).orElseThrow(() ->
+		       	new RecordNotFoundException("Employee not found")
+	  );
+	    }
 	 
 }

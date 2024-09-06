@@ -33,7 +33,7 @@ public class EmailService {
 	 
 	            // Sending the mail
 	            javaMailSender.send(mailMessage);
-	            return "Account has been created.Credienatils send on mail  Successfully...";
+	            return "Account has been created.Credentials send on mail successfully.";
 	        }
 	 
 	        // Catch block to handle the exceptions

@@ -7,6 +7,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -37,6 +38,12 @@ public class AdminController {
     private AssetRequestService assetRequestService = new AssetRequestService();
     
     // *********************   Employee API's ******************//
+	
+	
+	@GetMapping("/home")
+	 public ResponseEntity<String> Welcome() {
+        return ResponseEntity.ok("Welcome admin to the asset managment System");
+    }
     
     @PostMapping("/createEmployee")
     public ResponseEntity<String> createEmployee(@RequestBody Employee employee) {
@@ -49,12 +56,13 @@ public class AdminController {
     	}else if (employee.getUserName()== null || employee.getUserName().isBlank()) {
     		return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     	}
-    	
+    	String decodedPassword = employee.getPassword();
+    	System.out.print(decodedPassword);
         Employee emp =  employeeService.createEmployee(employee);
         
         	EmailDetails details = new EmailDetails();
         	StringBuilder msg = new StringBuilder();
-        	msg.append("Your login credentials are \n Username: "+employee.getUserName()+"\n Password:"+employee.getPassword());
+        	msg.append("Your login credentials are \n Username: "+employee.getUserName()+"\n Password:"+decodedPassword);
         	details.setMsgBody(msg.toString());
         	details.setRecipient(emp.getUserName());
         	details.setSubject("Your account has been created");
@@ -157,7 +165,7 @@ public class AdminController {
     	}else if (asset.getEmpId() == null || asset.getEmpId()<= 0) {
     		return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     	}
-    	 return ResponseEntity.ok(assetService.allocateAsset(asset));
+    	 return ResponseEntity.ok(assetService.allocateAsset(asset) ? "Asset allocated successfully" : "Asset already allocated");
     }
     
     @PostMapping("/updateAssetName")

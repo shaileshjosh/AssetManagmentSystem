@@ -32,12 +32,19 @@ AssetService assetService = new AssetService();
 @Autowired(required=false)
 EmployeeService employeeService;
 
+
+@GetMapping("/home")
+public ResponseEntity<String> Welcome() {
+	return ResponseEntity.ok("Welcome Employee to the asset managment System");
+	
+}
+
+
 //************ Asset Request Table**********//
 
 @PostMapping("/createAssetRequest")
 public ResponseEntity<String> changeAssetRequestStatus(@RequestBody Map<String,?> params) {
-	
-	try {
+
 		String userName = (String) params.get("userName");
 		Integer assetId =(Integer) params.get("assetId");
 		
@@ -50,9 +57,7 @@ public ResponseEntity<String> changeAssetRequestStatus(@RequestBody Map<String,?
 			 return ResponseEntity.ok(assetRequestService.createAssetRequest(userName, assetId));
 		} 
 		
-	}catch (Exception e) {
-		return ResponseEntity.ok("Wrong input added");
-	}
+	
 	
 	
   
