@@ -24,7 +24,7 @@ public class AdminService implements UserDetailsService {
 	
 	@Autowired
 	private BCryptPasswordEncoder passwordEncoder;
-	//check and create admin user at application startup
+	//check and create dmin user at application startup
 	public String createAdminUser() {
 		
 				List<Admin>  adminList = adminRepository.findAll();

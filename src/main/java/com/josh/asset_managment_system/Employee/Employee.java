@@ -2,7 +2,6 @@ package com.josh.asset_managment_system.Employee;
 
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.josh.asset_managment_system.Asset.Asset;
 
 import jakarta.persistence.CascadeType;

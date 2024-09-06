@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface AdminRepository extends JpaRepository<Admin,Integer>{
-	// Get admin from database based on userName;
+	// Get Admin from database based on userName;
 		@Query(value = "SELECT admin FROM Admin admin WHERE admin.userName  = :userName")
 		 Admin findByUserName(String userName);
 }

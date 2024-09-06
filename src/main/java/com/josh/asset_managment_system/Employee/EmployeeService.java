@@ -18,16 +18,16 @@ public class EmployeeService {
 	
     //called by admin to create employee.
 	 public Employee createEmployee(Employee employee){
-		 System.out.println(employee.getPassword());
 	       employee.setPassword(encoder.encode(employee.getPassword()));
 	       return employeeRepository.save(employee);
 	    }
 	 //delete employee from db
-	 public void deleteEmployee(String userName){
+	 public String deleteEmployee(String userName){
 	       Employee emp = employeeRepository.findByEmployeeName(userName).orElseThrow(() ->
 	       	new RecordNotFoundException("Employee not found")
      );
 	       employeeRepository.delete(emp);
+	       return "Employee Deleted successfully";
 	 }
 	 
 	 //this request is called by admin to get all employees

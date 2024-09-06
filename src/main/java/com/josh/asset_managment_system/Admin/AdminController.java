@@ -7,8 +7,6 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -41,52 +39,49 @@ public class AdminController {
     // *********************   Employee API's ******************//
     
     @PostMapping("/createEmployee")
-    public ResponseEntity<?> createEmployee(@RequestBody Employee employee) {
+    public ResponseEntity<String> createEmployee(@RequestBody Employee employee) {
     	
     	
     	if (employee.getEmpName()== null || employee.getEmpName().isBlank()) {
-    		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Please send employee name correctly");
+    		return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     	}else if (employee.getPassword()== null || employee.getPassword().isBlank()) {
-    		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Please send password correctly");
+    		return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     	}else if (employee.getUserName()== null || employee.getUserName().isBlank()) {
-    		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Please send user name correctly");
+    		return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     	}
     	
         Employee emp =  employeeService.createEmployee(employee);
         
-        if (!emp.getUserName().isEmpty()) {
         	EmailDetails details = new EmailDetails();
         	StringBuilder msg = new StringBuilder();
-        	msg.append("Your login credentials are \n Username: "+emp.getUserName()+"\n Password:"+emp.getPassword());
+        	msg.append("Your login credentials are \n Username: "+employee.getUserName()+"\n Password:"+employee.getPassword());
         	details.setMsgBody(msg.toString());
         	details.setRecipient(emp.getUserName());
         	details.setSubject("Your account has been created");
         	String result = emailService.sendSimpleMail(details);
-        	return ResponseEntity.status(HttpStatus.OK).body(result);
+        	return ResponseEntity.ok(result);
         	
-        } else {
-        	return ResponseEntity.status(HttpStatus.OK).body("Please try again");
-        } 
+        
     }
     
-    @DeleteMapping("/deleteEmployee")
-    public ResponseEntity<?> deleteEmployee(@RequestParam String userName) {
+    @DeleteMapping("/deleteEmployeeByUserName")
+    public ResponseEntity<String> deleteEmployee(@RequestParam String userName) {
     	if (userName == null || userName.isBlank()) {
-    		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Please send user name correctly");
+    		return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     	}
     	
-        employeeService.deleteEmployee(userName);
-        return ResponseEntity.status(HttpStatus.OK).body("Employee deleted successfully");
+       
+        return ResponseEntity.ok( employeeService.deleteEmployee(userName));
          
     }
     
     
     @GetMapping("/getEmployeeList")
-    public ResponseEntity<?> getEmployeeList() {
+    public ResponseEntity<List<Employee>> getEmployeeList() {
     	
     	List<Employee> employeeList =  employeeService.getAllEmployeeList();
     	if(employeeList.isEmpty()) {
-    		return ResponseEntity.status(HttpStatus.NO_CONTENT).body("No employee created yet,Please create the employee");
+    		return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     		
     	}
        return  ResponseEntity.ok(employeeList);
@@ -98,56 +93,56 @@ public class AdminController {
     // *********************   Asset API's ******************//
     
     @GetMapping("/getAssetList")
-    public ResponseEntity<?> getAssetList() {
+    public ResponseEntity<List<Asset>> getAssetList() {
     	List<Asset> assetList = assetService.getAllAssets();
     	if (assetList == null || assetList.isEmpty()) {
-    		return ResponseEntity.status(HttpStatus.NO_CONTENT).body("No assets found");
+    		return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     	} else {
     		
-    		 return ResponseEntity.status(HttpStatus.OK).body(assetList);
+    		 return ResponseEntity.ok(assetList);
     	} 
     }
     
     @PostMapping("/createAsset")
-    public ResponseEntity<?> createAsset(@RequestBody Map<String,String> assetObject) {
+    public ResponseEntity<String> createAsset(@RequestBody Map<String,String> assetObject) {
     	
     	if (assetObject.get("assetName") == null || assetObject.get("assetName").isBlank()) {
     		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Please send asset Name correctly");
     	} else {
     		 assetService.createAsset(assetObject.get("assetName"));
     		 
-    		 return ResponseEntity.status(HttpStatus.OK).body("Asset created successfully");
+    		 return ResponseEntity.ok("Asset created successfully");
     	} 
     	
     }
     
     
     
-    @DeleteMapping("/deleteAsset")
-    public ResponseEntity<?> deleteAsset(@RequestParam Integer assetId) {
+    @DeleteMapping("/deleteAssetById")
+    public ResponseEntity<String> deleteAsset(@RequestParam Integer assetId) {
     	
-    	if (assetId == null || assetId <= 0) {
+    	if (assetId <= 0) {
     		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Please enter correct asset ID");
     	} else {
     		assetService.deleteAsset(assetId);
-    		 return ResponseEntity.status(HttpStatus.OK).body("asset deleted successfully");
+    		 return ResponseEntity.ok("asset deleted successfully");
     	} 
     }
     
     @GetMapping("/searchAssetNameInAssetList/assetName={assetName}")
-    public ResponseEntity<?> searchAssetNameInAssetList(@PathVariable String assetName) {
+    public ResponseEntity<List<Asset>> searchAssetNameInAssetList(@PathVariable String assetName) {
     	
     	if (assetName == null || assetName.isBlank()) {
-    		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Please enter correct asset name");
+    		return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     	}
     	
     	List<Asset>  assetList =  assetService.searchAssets(assetName);
     	
     	if (assetList == null || assetList.isEmpty()) {
-    		return ResponseEntity.status(HttpStatus.NO_CONTENT).body("No searched assets found");
+    		return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     	} else {
     		
-    		 return ResponseEntity.status(HttpStatus.OK).body(assetList);
+    		 return ResponseEntity.ok(assetList);
     	} 
     	
     }
@@ -155,25 +150,25 @@ public class AdminController {
     
     
     @PostMapping("/allocateAsset")
-    public ResponseEntity<?> updateAsset(@RequestBody Asset asset) {
+    public ResponseEntity<String> updateAsset(@RequestBody Asset asset) {
     	
     	if (asset.getAssetId() == null || asset.getAssetId()<= 0) {
-    		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Please enter correct asset ID");
+    		return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     	}else if (asset.getEmpId() == null || asset.getEmpId()<= 0) {
-    		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Please enter correct employee ID");
+    		return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     	}
-    	 return ResponseEntity.status(HttpStatus.OK).body(assetService.allocateAsset(asset));
+    	 return ResponseEntity.ok(assetService.allocateAsset(asset));
     }
     
     @PostMapping("/updateAssetName")
-    public ResponseEntity<?> updateAssetName(@RequestBody Asset asset) {
+    public ResponseEntity<String> updateAssetName(@RequestBody Asset asset) {
     	
     	if (asset.getAssetId() == null || asset.getAssetId()<= 0) {
-    		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Please enter correct asset ID");
+    		return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     	}else if (asset.getAssetName() == null || asset.getAssetName().isBlank()) {
-    		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Please enter correct asset name");
+    		return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     	}
-    	return ResponseEntity.status(HttpStatus.OK).body(assetService.updateAsset(asset));
+    	return ResponseEntity.ok(assetService.updateAsset(asset));
       
     }
     
@@ -181,28 +176,28 @@ public class AdminController {
     // *********************   Asset List API's ******************//
     
     @GetMapping("/getAssetRequestList")
-    public ResponseEntity<?> getAssetRequestList() {
+    public ResponseEntity<List<AssetRequest>> getAssetRequestList() {
     	
     	List<AssetRequest> assetRequestList =assetRequestService.getAllAssetRequests();
     	if (assetRequestList == null || assetRequestList.isEmpty()) {
-    		return ResponseEntity.status(HttpStatus.NO_CONTENT).body("No assets found");
+    		return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     	} else {
     		
-    		 return ResponseEntity.status(HttpStatus.OK).body(assetRequestList);
+    		 return ResponseEntity.ok(assetRequestList);
     	} 
     	
     }
     
     @PostMapping("/changeAssetRequestStatus")
-    public ResponseEntity<?> changeAssetRequestStatus(@RequestBody AssetRequest request) {
+    public ResponseEntity<String> changeAssetRequestStatus(@RequestBody AssetRequest request) {
     	
     	if (request.getRequestId() == null || request.getRequestId()<= 0) {
-    		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Please enter correct asset ID");
+    		return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     	}else if (request.getAllocationStatus() == null || request.getAllocationStatus().isBlank()) {
-    		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Please enter correct status");
+    		return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     	}
     	
-    	return ResponseEntity.status(HttpStatus.OK).body(assetRequestService.changeAssetRequestStatus(request));
+    	return ResponseEntity.ok(assetRequestService.changeAssetRequestStatus(request));
       
     }
 

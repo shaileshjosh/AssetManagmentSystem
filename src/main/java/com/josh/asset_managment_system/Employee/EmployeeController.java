@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.josh.asset_managment_system.Asset.Asset;
@@ -36,23 +35,23 @@ EmployeeService employeeService;
 //************ Asset Request Table**********//
 
 @PostMapping("/createAssetRequest")
-public ResponseEntity<?> changeAssetRequestStatus(@RequestBody Map<String,?> params) {
+public ResponseEntity<String> changeAssetRequestStatus(@RequestBody Map<String,?> params) {
 	
 	try {
 		String userName = (String) params.get("userName");
 		Integer assetId =(Integer) params.get("assetId");
 		
 		if (userName.isBlank()) {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Please send user name correctly");
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
 		}else if (assetId<=0) {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Please send asset ID correctly");
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
 		} else {
 			 
-			 return ResponseEntity.status(HttpStatus.OK).body(assetRequestService.createAssetRequest(userName, assetId));
+			 return ResponseEntity.ok(assetRequestService.createAssetRequest(userName, assetId));
 		} 
 		
 	}catch (Exception e) {
-		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Wrong input added");
+		return ResponseEntity.ok("Wrong input added");
 	}
 	
 	
@@ -60,14 +59,14 @@ public ResponseEntity<?> changeAssetRequestStatus(@RequestBody Map<String,?> par
 }
 
 @GetMapping("/getAllAssetRequest/empId={empId}")
-ResponseEntity<?> getAllAssetRequest(@PathVariable Integer empId){
+ResponseEntity<List<AssetRequest>> getAllAssetRequest(@PathVariable Integer empId){
 	
 	List<AssetRequest> assetRequestList = assetRequestService.getAllAssetRequestForEmployee(empId);
 	if (assetRequestList == null || assetRequestList.isEmpty()) {
-		return ResponseEntity.status(HttpStatus.NO_CONTENT).body("No asset requests found");
+		return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
 	} else {
 		
-		 return ResponseEntity.status(HttpStatus.OK).body(assetRequestList);
+		 return ResponseEntity.ok(assetRequestList);
 	} 
 
 }
@@ -75,14 +74,14 @@ ResponseEntity<?> getAllAssetRequest(@PathVariable Integer empId){
 //************ Asset Table **********//
 
 @GetMapping("/getAllAssets/empId={empId}")
-ResponseEntity<?> getAllAssets(@PathVariable Integer empId){
+ResponseEntity<List<Asset>> getAllAssets(@PathVariable Integer empId){
 	
 	List<Asset> assetRequestList = assetService.getEmployeeAssets(empId);
 	if (assetRequestList == null || assetRequestList.isEmpty()) {
-		return ResponseEntity.status(HttpStatus.NO_CONTENT).body("No assets allocated yet");
+		return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
 	} else {
 		
-		 return ResponseEntity.status(HttpStatus.OK).body(assetRequestList);
+		 return ResponseEntity.ok(assetRequestList);
 	} 
 
 }
@@ -91,17 +90,17 @@ ResponseEntity<?> getAllAssets(@PathVariable Integer empId){
 
 
 @PostMapping("/updateProfile")
-public ResponseEntity<?> createRequest(@RequestBody Employee emp) {
+public ResponseEntity<String> createRequest(@RequestBody Employee emp) {
 	
 	
 		if (emp.getEmpName() != null && emp.getEmpName().isBlank()) {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Please send employee name correctly");
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
 		}else if(emp.getUserName() == null || emp.getUserName().isBlank()) {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Please send user name correctly");
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
 		}else if(emp.getPassword() != null && emp.getPassword().isBlank()) {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Please send password correctly");
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
 		} else {
-			 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(employeeService.updateEmployeeProfile(emp));
+			 return ResponseEntity.ok(employeeService.updateEmployeeProfile(emp));
 		} 
   
 }
