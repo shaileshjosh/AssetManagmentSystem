@@ -7,6 +7,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -41,11 +42,13 @@ public class AdminController {
 	
 	
 	@GetMapping("/home")
+	@PreAuthorize("hasAuthority('ROLE_ADMIN')")
 	 public ResponseEntity<String> Welcome() {
         return ResponseEntity.ok("Welcome admin to the asset managment System");
     }
-    
+	 
     @PostMapping("/createEmployee")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<String> createEmployee(@RequestBody Employee employee) {
     	
     	
@@ -73,6 +76,7 @@ public class AdminController {
     }
     
     @DeleteMapping("/deleteEmployeeByUserName")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<String> deleteEmployee(@RequestParam String userName) {
     	if (userName == null || userName.isBlank()) {
     		return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
@@ -85,6 +89,7 @@ public class AdminController {
     
     
     @GetMapping("/getEmployeeList")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<List<Employee>> getEmployeeList() {
     	
     	List<Employee> employeeList =  employeeService.getAllEmployeeList();
@@ -101,6 +106,7 @@ public class AdminController {
     // *********************   Asset API's ******************//
     
     @GetMapping("/getAssetList")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<List<Asset>> getAssetList() {
     	List<Asset> assetList = assetService.getAllAssets();
     	if (assetList == null || assetList.isEmpty()) {
@@ -112,6 +118,7 @@ public class AdminController {
     }
     
     @PostMapping("/createAsset")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<String> createAsset(@RequestBody Map<String,String> assetObject) {
     	
     	if (assetObject.get("assetName") == null || assetObject.get("assetName").isBlank()) {
@@ -127,6 +134,7 @@ public class AdminController {
     
     
     @DeleteMapping("/deleteAssetById")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<String> deleteAsset(@RequestParam Integer assetId) {
     	
     	if (assetId <= 0) {
@@ -138,6 +146,7 @@ public class AdminController {
     }
     
     @GetMapping("/searchAssetNameInAssetList/assetName={assetName}")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<List<Asset>> searchAssetNameInAssetList(@PathVariable String assetName) {
     	
     	if (assetName == null || assetName.isBlank()) {
@@ -158,6 +167,7 @@ public class AdminController {
     
     
     @PostMapping("/allocateAsset")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<String> updateAsset(@RequestBody Asset asset) {
     	
     	if (asset.getAssetId() == null || asset.getAssetId()<= 0) {
@@ -169,6 +179,7 @@ public class AdminController {
     }
     
     @PostMapping("/updateAssetName")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<String> updateAssetName(@RequestBody Asset asset) {
     	
     	if (asset.getAssetId() == null || asset.getAssetId()<= 0) {
@@ -184,6 +195,7 @@ public class AdminController {
     // *********************   Asset List API's ******************//
     
     @GetMapping("/getAssetRequestList")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<List<AssetRequest>> getAssetRequestList() {
     	
     	List<AssetRequest> assetRequestList =assetRequestService.getAllAssetRequests();
@@ -197,6 +209,7 @@ public class AdminController {
     }
     
     @PostMapping("/changeAssetRequestStatus")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<String> changeAssetRequestStatus(@RequestBody AssetRequest request) {
     	
     	if (request.getRequestId() == null || request.getRequestId()<= 0) {

@@ -6,6 +6,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -34,6 +35,7 @@ EmployeeService employeeService;
 
 
 @GetMapping("/home")
+@PreAuthorize("hasAuthority('ROLE_EMPLOYEE')")
 public ResponseEntity<String> Welcome() {
 	return ResponseEntity.ok("Welcome Employee to the asset managment System");
 	
@@ -43,6 +45,7 @@ public ResponseEntity<String> Welcome() {
 //************ Asset Request Table**********//
 
 @PostMapping("/createAssetRequest")
+@PreAuthorize("hasAuthority('ROLE_EMPLOYEE')")
 public ResponseEntity<String> changeAssetRequestStatus(@RequestBody Map<String,?> params) {
 
 		String userName = (String) params.get("userName");
@@ -64,6 +67,7 @@ public ResponseEntity<String> changeAssetRequestStatus(@RequestBody Map<String,?
 }
 
 @GetMapping("/getAllAssetRequest/empId={empId}")
+@PreAuthorize("hasAuthority('ROLE_EMPLOYEE')")
 ResponseEntity<List<AssetRequest>> getAllAssetRequest(@PathVariable Integer empId){
 	
 	List<AssetRequest> assetRequestList = assetRequestService.getAllAssetRequestForEmployee(empId);
@@ -79,6 +83,8 @@ ResponseEntity<List<AssetRequest>> getAllAssetRequest(@PathVariable Integer empI
 //************ Asset Table **********//
 
 @GetMapping("/getAllAssets/empId={empId}")
+
+@PreAuthorize("hasAuthority('ROLE_EMPLOYEE')")
 ResponseEntity<List<Asset>> getAllAssets(@PathVariable Integer empId){
 	
 	List<Asset> assetRequestList = assetService.getEmployeeAssets(empId);
@@ -93,8 +99,8 @@ ResponseEntity<List<Asset>> getAllAssets(@PathVariable Integer empId){
 
 // ********* Employee Table********
 
-
 @PostMapping("/updateProfile")
+@PreAuthorize("hasAuthority('ROLE_EMPLOYEE')")
 public ResponseEntity<String> createRequest(@RequestBody Employee emp) {
 	
 	
