@@ -40,7 +40,7 @@ public class CustomAdmin implements UserDetails{
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		
 		SimpleGrantedAuthority authority = new SimpleGrantedAuthority("ROLE_"+this.role);
-		// TODO Auto-generated method stub
+		System.out.print("role is"+this.role);
 		return List.of(authority);
 	}
 
