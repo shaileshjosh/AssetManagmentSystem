@@ -34,18 +34,10 @@ AssetService assetService = new AssetService();
 EmployeeService employeeService;
 
 
-@GetMapping("/home")
-@PreAuthorize("hasAuthority('ROLE_EMPLOYEE')")
-public ResponseEntity<String> Welcome() {
-	return ResponseEntity.ok("Welcome Employee to the asset managment System");
-	
-}
-
-
 //************ Asset Request Table**********//
 
 @PostMapping("/createAssetRequest")
-@PreAuthorize("hasAuthority('ROLE_EMPLOYEE')")
+
 public ResponseEntity<String> changeAssetRequestStatus(@RequestBody Map<String,?> params) {
 
 		String userName = (String) params.get("userName");
@@ -67,7 +59,7 @@ public ResponseEntity<String> changeAssetRequestStatus(@RequestBody Map<String,?
 }
 
 @GetMapping("/getAllAssetRequest/empId={empId}")
-@PreAuthorize("hasAuthority('ROLE_EMPLOYEE')")
+
 ResponseEntity<List<AssetRequest>> getAllAssetRequest(@PathVariable Integer empId){
 	
 	List<AssetRequest> assetRequestList = assetRequestService.getAllAssetRequestForEmployee(empId);
@@ -84,7 +76,6 @@ ResponseEntity<List<AssetRequest>> getAllAssetRequest(@PathVariable Integer empI
 
 @GetMapping("/getAllAssets/empId={empId}")
 
-@PreAuthorize("hasAuthority('ROLE_EMPLOYEE')")
 ResponseEntity<List<Asset>> getAllAssets(@PathVariable Integer empId){
 	
 	List<Asset> assetRequestList = assetService.getEmployeeAssets(empId);
@@ -100,7 +91,6 @@ ResponseEntity<List<Asset>> getAllAssets(@PathVariable Integer empId){
 // ********* Employee Table********
 
 @PostMapping("/updateProfile")
-@PreAuthorize("hasAuthority('ROLE_EMPLOYEE')")
 public ResponseEntity<String> createRequest(@RequestBody Employee emp) {
 	
 	

@@ -21,17 +21,17 @@ public class CustomAdmin implements UserDetails{
 	Employee employee;
 
 	public CustomAdmin(Admin admin) {
-		super();
+		
 		this.admin = admin;
-		this.role = "ADMIN";
+		this.role = "ROLE_ADMIN";
 	}
 	
 	
 
 	public CustomAdmin(Employee employee) {
-		super();
+		
 		this.employee = employee;
-		this.role = "EMPLOYEE";
+		this.role = "ROLE_EMPLOYEE";
 	}
 
 
@@ -39,8 +39,7 @@ public class CustomAdmin implements UserDetails{
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		
-		SimpleGrantedAuthority authority = new SimpleGrantedAuthority("ROLE_"+this.role);
-		System.out.print("role is"+this.role);
+		SimpleGrantedAuthority authority = new SimpleGrantedAuthority(this.role);
 		return List.of(authority);
 	}
 

@@ -65,8 +65,8 @@ public class AppConfig{
             .csrf(csrf -> csrf.disable()) 
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/auth/login","/auth/logout").permitAll()
-                .requestMatchers("/auth/employee/**").hasRole("EMPLOYEE")
-                .requestMatchers("/auth/admin/**").hasRole("ADMIN")
+                .requestMatchers("/employee/**").hasRole("EMPLOYEE")
+                .requestMatchers("/admin/**").hasRole("ADMIN")
                 .anyRequest().authenticated() // Protect all other endpoints
             )
             .sessionManagement(sess -> sess

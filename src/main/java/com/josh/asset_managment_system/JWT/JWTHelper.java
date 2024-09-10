@@ -60,8 +60,8 @@ public class JWTHelper {
     //   compaction of the JWT to a URL-safe string
     private String doGenerateToken(Map<String, Object> claim, String subject,List<String> roles) {
     	 Claims claims = Jwts.claims().setSubject(subject);
-         claims.put("username", roles);
-         claims.put(AUTHORITIES_KEY, subject);
+         claims.put(AUTHORITIES_KEY, roles);
+         claims.put("username", subject);
         return Jwts.builder().setClaims(claims).setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + + 1000 * 60 * 30))
                 .signWith(getSignKey(), SignatureAlgorithm.HS512).compact();
@@ -110,23 +110,6 @@ public class JWTHelper {
     public Boolean validateToken(String token, UserDetails userDetails) {
         final String username = getUsernameFromToken(token);
         return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
-    }
-
-    
-    UsernamePasswordAuthenticationToken getAuthenticationToken(final String token, final Authentication existingAuth, final UserDetails userDetails) {
-
-        final JwtParser jwtParser = Jwts.parser().setSigningKey(getSignKey());
-
-        final Jws<Claims> claimsJws = jwtParser.parseClaimsJws(token);
-
-        final Claims claims = claimsJws.getBody();
-
-        final Collection<? extends GrantedAuthority> authorities =
-                Arrays.stream(claims.get(AUTHORITIES_KEY).toString().split(","))
-                        .map(SimpleGrantedAuthority::new)
-                        .collect(Collectors.toList());
-
-        return new UsernamePasswordAuthenticationToken(userDetails, "", authorities);
     }
 
 }
