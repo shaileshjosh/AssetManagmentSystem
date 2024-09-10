@@ -69,9 +69,9 @@ public class AdminController {
         
     }
     
-    @DeleteMapping("/deleteEmployeeByUserName")
+    @DeleteMapping("/deleteEmployee/{userName}")
    
-    public ResponseEntity<String> deleteEmployee(@RequestParam String userName) {
+    public ResponseEntity<String> deleteEmployee(@PathVariable String userName) {
     	if (userName == null || userName.isBlank()) {
     		return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     	}
@@ -127,9 +127,9 @@ public class AdminController {
     
     
     
-    @DeleteMapping("/deleteAssetById")
+    @DeleteMapping("/deleteAsset/{assetId}")
    
-    public ResponseEntity<String> deleteAsset(@RequestBody Integer assetId) {
+    public ResponseEntity<String> deleteAsset(@PathVariable Integer assetId) {
     	
     	if (assetId <= 0) {
     		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Please enter correct asset ID");
