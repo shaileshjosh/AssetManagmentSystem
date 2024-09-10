@@ -1,5 +1,7 @@
 package com.josh.asset_managment_system.Employee;
 
+import org.antlr.v4.runtime.misc.NotNull;
+
 import com.josh.asset_managment_system.JWT.JWTRequest;
 
 import jakarta.persistence.Column;
@@ -8,10 +10,7 @@ import lombok.Builder;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
-@ToString
+
 public class EmployeeRequest {
 		
 		private String empName;
