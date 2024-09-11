@@ -1,4 +1,4 @@
-package com.josh.asset_managment_system.AssetRequest;
+package com.josh.asset_managment_system.AssetAllocation;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -9,7 +9,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "AssetRequest", schema = "AssetSystem")
-public class AssetRequest {
+public class AssetAllocation {
 	
 	@Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)

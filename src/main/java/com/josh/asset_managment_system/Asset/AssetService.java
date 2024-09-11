@@ -33,7 +33,7 @@ public class AssetService {
     }
 
     //allocate asset to the employee. this is called by admin.
-    public boolean allocateAsset(Asset requestAsset) {
+    public boolean allocateAsset(AssignAssetRequest requestAsset) {
 
     	Asset asset = assetRepository.findById(requestAsset.getAssetId()).orElseThrow(() ->
        	new RecordNotFoundException("Asset not found"));
@@ -80,11 +80,11 @@ public class AssetService {
     
     //update asset record from database. this is called by admin.
     
-    public String updateAsset(Asset requestAsset) {
+    public String updateAsset(UpdateAssetRequest request) {
     	
-    	Asset asset = assetRepository.findById(requestAsset.getAssetId()).orElseThrow(() ->
+    	Asset asset = assetRepository.findById(request.getAssetId()).orElseThrow(() ->
        	new RecordNotFoundException("Asset not found"));
-        asset.setAssetName(requestAsset.getAssetName());
+        asset.setAssetName(request.getAssetName());
         assetRepository.save(asset);
         return "Asset updated successfully";
     }

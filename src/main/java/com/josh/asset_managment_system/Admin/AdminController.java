@@ -18,9 +18,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.josh.asset_managment_system.Employee.*;
+
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+
 import com.josh.asset_managment_system.Asset.*;
-import com.josh.asset_managment_system.AssetRequest.AssetRequest;
-import com.josh.asset_managment_system.AssetRequest.AssetRequestService;
+import com.josh.asset_managment_system.AssetAllocation.AssetAllocation;
+import com.josh.asset_managment_system.AssetAllocation.AssetAllocationService;
+import com.josh.asset_managment_system.AssetAllocation.ChangeAssetAllocationStatusRequest;
 
 @RestController
 @RequestMapping("/admin")
@@ -36,30 +42,26 @@ public class AdminController {
     private EmailService emailService = new EmailService();
 	
 	@Autowired
-    private AssetRequestService assetRequestService = new AssetRequestService();
+    private AssetAllocationService assetAllocationService = new AssetAllocationService();
     
     // *********************   Employee API's ******************//
 	
 	 
     @PostMapping("/createEmployee")
    
-    public ResponseEntity<String> createEmployee(@RequestBody Employee employee) {
+    public ResponseEntity<String> createEmployee(@Valid @RequestBody CreateEmployeeRequest request) {
     	
-    	
-    	if (employee.getEmpName()== null || employee.getEmpName().isBlank()) {
-    		return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-    	}else if (employee.getPassword()== null || employee.getPassword().isBlank()) {
-    		return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-    	}else if (employee.getUserName()== null || employee.getUserName().isBlank()) {
-    		return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-    	}
-    	String decodedPassword = employee.getPassword();
+    	String decodedPassword = request.getPassword();
     	System.out.print(decodedPassword);
-        Employee emp =  employeeService.createEmployee(employee);
+        Employee emp =  employeeService.createEmployee(request);
         
         	EmailDetails details = new EmailDetails();
         	StringBuilder msg = new StringBuilder();
-        	msg.append("Your login credentials are \n Username: "+employee.getUserName()+"\n Password:"+decodedPassword);
+        	msg.append("Your login credentials are \n Username: ");
+        	msg.append(request.getUserName());
+        	msg.append("\n Password:");
+        	msg.append(decodedPassword);
+        
         	details.setMsgBody(msg.toString());
         	details.setRecipient(emp.getUserName());
         	details.setSubject("Your account has been created");
@@ -71,12 +73,8 @@ public class AdminController {
     
     @DeleteMapping("/deleteEmployee/{userName}")
    
-    public ResponseEntity<String> deleteEmployee(@PathVariable String userName) {
-    	if (userName == null || userName.isBlank()) {
-    		return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-    	}
+    public ResponseEntity<String> deleteEmployee(@PathVariable @NotBlank String userName) {
     	
-       
         return ResponseEntity.ok( employeeService.deleteEmployee(userName));
          
     }
@@ -99,6 +97,13 @@ public class AdminController {
     
     // *********************   Asset API's ******************//
     
+    @PostMapping("/createAsset")
+    
+    public ResponseEntity<String> createAsset(@Valid @RequestBody CreateAssetRequest assetObject) {
+    		 assetService.createAsset(assetObject.getAssetName());
+    		 return ResponseEntity.ok("Asset created successfully");
+    }
+    
     @GetMapping("/getAssetList")
     
     public ResponseEntity<List<Asset>> getAssetList() {
@@ -111,41 +116,27 @@ public class AdminController {
     	} 
     }
     
-    @PostMapping("/createAsset")
-   
-    public ResponseEntity<String> createAsset(@RequestBody Map<String,String> assetObject) {
-    	
-    	if (assetObject.get("assetName") == null || assetObject.get("assetName").isBlank()) {
-    		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Please send asset Name correctly");
-    	} else {
-    		 assetService.createAsset(assetObject.get("assetName"));
-    		 
-    		 return ResponseEntity.ok("Asset created successfully");
-    	} 
-    	
-    }
-    
-    
     
     @DeleteMapping("/deleteAsset/{assetId}")
    
-    public ResponseEntity<String> deleteAsset(@PathVariable Integer assetId) {
+    public ResponseEntity<String> deleteAsset(@PathVariable @NotNull Integer assetId) {
     	
-    	if (assetId <= 0) {
-    		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Please enter correct asset ID");
-    	} else {
+    	
     		assetService.deleteAsset(assetId);
     		 return ResponseEntity.ok("asset deleted successfully");
-    	} 
     }
     
-    @GetMapping("/searchAssetNameInAssetList/assetName={assetName}")
+    @PostMapping("/updateAsset")
     
-    public ResponseEntity<List<Asset>> searchAssetNameInAssetList(@PathVariable String assetName) {
+    public ResponseEntity<String> updateAsset(@Valid @RequestBody UpdateAssetRequest request) {
     	
-    	if (assetName == null || assetName.isBlank()) {
-    		return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-    	}
+    	return ResponseEntity.ok(assetService.updateAsset(request));
+      
+    }
+    
+    @GetMapping("/searchAsset/{assetName}")
+    
+    public ResponseEntity<List<Asset>> searchAssetNameInAssetList(@PathVariable @NotBlank String assetName) {
     	
     	List<Asset>  assetList =  assetService.searchAssets(assetName);
     	
@@ -158,61 +149,28 @@ public class AdminController {
     	
     }
     
-    
-    
-    @PostMapping("/allocateAsset")
-   
-    public ResponseEntity<String> updateAsset(@RequestBody Asset asset) {
-    	
-    	if (asset.getAssetId() == null || asset.getAssetId()<= 0) {
-    		return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-    	}else if (asset.getEmpId() == null || asset.getEmpId()<= 0) {
-    		return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-    	}
-    	 return ResponseEntity.ok(assetService.allocateAsset(asset) ? "Asset allocated successfully" : "Asset already allocated");
-    }
-    
-    @PostMapping("/updateAssetName")
-   
-    public ResponseEntity<String> updateAssetName(@RequestBody Asset asset) {
-    	
-    	if (asset.getAssetId() == null || asset.getAssetId()<= 0) {
-    		return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-    	}else if (asset.getAssetName() == null || asset.getAssetName().isBlank()) {
-    		return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-    	}
-    	return ResponseEntity.ok(assetService.updateAsset(asset));
-      
-    }
-    
-    
     // *********************   Asset List API's ******************//
     
     @GetMapping("/getAssetRequestList")
     
-    public ResponseEntity<List<AssetRequest>> getAssetRequestList() {
+    public ResponseEntity<List<AssetAllocation>> getAssetAllocationRequestList() {
     	
-    	List<AssetRequest> assetRequestList =assetRequestService.getAllAssetRequests();
-    	if (assetRequestList == null || assetRequestList.isEmpty()) {
+    	List<AssetAllocation> assetAllocationRequestList = assetAllocationService.getAllAssetRequests();
+    	if (assetAllocationRequestList == null || assetAllocationRequestList.isEmpty()) {
     		return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     	} else {
     		
-    		 return ResponseEntity.ok(assetRequestList);
+    		 return ResponseEntity.ok(assetAllocationRequestList);
     	} 
     	
     }
     
     @PostMapping("/changeAssetRequestStatus")
     
-    public ResponseEntity<String> changeAssetRequestStatus(@RequestBody AssetRequest request) {
+    public ResponseEntity<String> changeAssetAllocationStatus(@Valid @RequestBody ChangeAssetAllocationStatusRequest request) {
     	
-    	if (request.getRequestId() == null || request.getRequestId()<= 0) {
-    		return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-    	}else if (request.getAllocationStatus() == null || request.getAllocationStatus().isBlank()) {
-    		return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-    	}
-    	
-    	return ResponseEntity.ok(assetRequestService.changeAssetRequestStatus(request));
+ 
+    	return ResponseEntity.ok(assetAllocationService.changeAssetRequestStatus(request));
       
     }
 

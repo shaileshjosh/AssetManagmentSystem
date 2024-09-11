@@ -18,9 +18,13 @@ public class EmployeeService {
 	private BCryptPasswordEncoder encoder;
 	
     //called by admin to create employee.
-	 public Employee createEmployee(Employee employee){
-	       employee.setPassword(encoder.encode(employee.getPassword()));
-	       return employeeRepository.save(employee);
+	 public Employee createEmployee(CreateEmployeeRequest request){
+		 Employee emp = new Employee();
+		 emp.setEmpName(request.getEmpName());
+		 emp.setPassword(encoder.encode(request.getPassword()));
+		 emp.setUserName(request.getUserName());
+	      
+	       return employeeRepository.save(emp);
 	    }
 	 //delete employee from db
 	 public String deleteEmployee(String userName){
@@ -37,17 +41,17 @@ public class EmployeeService {
 	  }
 	 
 	 //update  employee profile.called by employee only
-	 public String updateEmployeeProfile(Employee requestEmp){
-	       Employee emp = employeeRepository.findByEmployeeName(requestEmp.getUserName()).orElseThrow(() ->
+	 public String updateEmployeeProfile(UpdateEmployeeProfileRequest request){
+	       Employee emp = employeeRepository.findById(request.getEmpId()).orElseThrow(() ->
 	       	new RecordNotFoundException("Employee not found")
      );
 	       
-	       if (requestEmp.getEmpName() != null && !requestEmp.getEmpName().equals(emp.getEmpName())) {
-	    	   emp.setEmpName(requestEmp.getEmpName());
+	       if (request.getEmpName() != null && !request.getEmpName().isBlank() && !request.getEmpName().equals(emp.getEmpName())) {
+	    	   emp.setEmpName(request.getEmpName());
 	       }
 	       
-	       if (requestEmp.getPassword() != null) {
-	    	   emp.setPassword(encoder.encode(requestEmp.getPassword()));
+	       if (!request.getPassword().isBlank()) {
+	    	   emp.setPassword(encoder.encode(request.getPassword()));
 	       }
 	       
 	       employeeRepository.save(emp);

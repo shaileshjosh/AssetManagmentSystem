@@ -16,15 +16,19 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.josh.asset_managment_system.Asset.Asset;
 import com.josh.asset_managment_system.Asset.AssetService;
-import com.josh.asset_managment_system.AssetRequest.AssetRequest;
-import com.josh.asset_managment_system.AssetRequest.AssetRequestService;
+import com.josh.asset_managment_system.AssetAllocation.AssetAllocation;
+import com.josh.asset_managment_system.AssetAllocation.AssetAllocationService;
+
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 @RestController
 @RequestMapping("/employee")
 public class EmployeeController {
 	
 @Autowired(required=false)
-AssetRequestService assetRequestService = new AssetRequestService();
+AssetAllocationService assetAllocationService = new AssetAllocationService();
 
 @Autowired(required=false)
 AssetService assetService = new AssetService();
@@ -33,50 +37,30 @@ AssetService assetService = new AssetService();
 @Autowired(required=false)
 EmployeeService employeeService;
 
-
 //************ Asset Request Table**********//
 
 @PostMapping("/createAssetRequest")
 
-public ResponseEntity<String> changeAssetRequestStatus(@RequestBody Map<String,?> params) {
+public ResponseEntity<String> createAssetAllocationRequest(@Valid @RequestBody CreateAssetAllocationRequest request) {
 
-		String userName = (String) params.get("userName");
-		Integer assetId =(Integer) params.get("assetId");
-		
-		if (userName.isBlank()) {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-		}else if (assetId<=0) {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-		} else {
-			 
-			 return ResponseEntity.ok(assetRequestService.createAssetRequest(userName, assetId));
-		} 
-		
-	
-	
-	
-  
+			 return ResponseEntity.ok(assetAllocationService.createAssetAllocationRequest(request));
+
 }
 
-@GetMapping("/getAllAssetRequest/empId={empId}")
+@GetMapping("/getAllAssetRequest/{empId}")
 
-ResponseEntity<List<AssetRequest>> getAllAssetRequest(@PathVariable Integer empId){
+ResponseEntity<List<AssetAllocation>> getAllAssetRequest(@PathVariable @NotNull Integer empId){
 	
-	List<AssetRequest> assetRequestList = assetRequestService.getAllAssetRequestForEmployee(empId);
-	if (assetRequestList == null || assetRequestList.isEmpty()) {
-		return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-	} else {
-		
-		 return ResponseEntity.ok(assetRequestList);
-	} 
-
+	List<AssetAllocation> assetAllocationRequestList = assetAllocationService.getAllAssetRequestForEmployee(empId);
+	
+		 return ResponseEntity.ok(assetAllocationRequestList);
 }
 
 //************ Asset Table **********//
 
-@GetMapping("/getAllAssets/empId={empId}")
+@GetMapping("/getAllAssets/{empId}")
 
-ResponseEntity<List<Asset>> getAllAssets(@PathVariable Integer empId){
+ResponseEntity<List<Asset>> getAllAssets(@PathVariable @NotNull Integer empId){
 	
 	List<Asset> assetRequestList = assetService.getEmployeeAssets(empId);
 	if (assetRequestList == null || assetRequestList.isEmpty()) {
@@ -88,21 +72,13 @@ ResponseEntity<List<Asset>> getAllAssets(@PathVariable Integer empId){
 
 }
 
+
 // ********* Employee Table********
 
 @PostMapping("/updateProfile")
-public ResponseEntity<String> createRequest(@RequestBody Employee emp) {
+public ResponseEntity<String> createRequest(@Valid @RequestBody UpdateEmployeeProfileRequest request) {
 	
-	
-		if (emp.getEmpName() != null && emp.getEmpName().isBlank()) {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-		}else if(emp.getUserName() == null || emp.getUserName().isBlank()) {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-		}else if(emp.getPassword() != null && emp.getPassword().isBlank()) {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-		} else {
-			 return ResponseEntity.ok(employeeService.updateEmployeeProfile(emp));
-		} 
+			 return ResponseEntity.ok(employeeService.updateEmployeeProfile(request));
   
 }
 	
