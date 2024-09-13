@@ -1,6 +1,5 @@
 package com.josh.asset_managment_system.Employee;
 
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

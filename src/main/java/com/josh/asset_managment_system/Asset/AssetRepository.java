@@ -11,7 +11,7 @@ public interface AssetRepository extends JpaRepository<Asset,Integer> {
 	
 	// get assets from database based on employee id;
 	@Query(value = "SELECT asset FROM Asset asset WHERE asset.empId  = :empId")
-	 Optional<List<Asset>> findByEmployeeId(Integer empId);
+	 List<Asset> findByEmployeeId(Integer empId);
 	
 	// get assets from database based on assetName;
 		@Query(value = "SELECT asset FROM Asset asset WHERE asset.assetName LIKE  %:assetName%")

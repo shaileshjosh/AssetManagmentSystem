@@ -2,20 +2,17 @@ package com.josh.asset_managment_system.Admin;
 
 
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.validation.annotation.Validated;
+
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.josh.asset_managment_system.Employee.*;
 
@@ -52,7 +49,7 @@ public class AdminController {
     public ResponseEntity<String> createEmployee(@Valid @RequestBody CreateEmployeeRequest request) {
     	
     	String decodedPassword = request.getPassword();
-    	System.out.print(decodedPassword);
+    	
         Employee emp =  employeeService.createEmployee(request);
         
         	EmailDetails details = new EmailDetails();
@@ -100,8 +97,8 @@ public class AdminController {
     @PostMapping("/createAsset")
     
     public ResponseEntity<String> createAsset(@Valid @RequestBody CreateAssetRequest assetObject) {
-    		 assetService.createAsset(assetObject.getAssetName());
-    		 return ResponseEntity.ok("Asset created successfully");
+    	return ResponseEntity.ok(assetService.createAsset(assetObject.getAssetName()));
+    		
     }
     
     @GetMapping("/getAssetList")
@@ -121,9 +118,7 @@ public class AdminController {
    
     public ResponseEntity<String> deleteAsset(@PathVariable @NotNull Integer assetId) {
     	
-    	
-    		assetService.deleteAsset(assetId);
-    		 return ResponseEntity.ok("asset deleted successfully");
+    		 return ResponseEntity.ok(assetService.deleteAsset(assetId));
     }
     
     @PostMapping("/updateAsset")

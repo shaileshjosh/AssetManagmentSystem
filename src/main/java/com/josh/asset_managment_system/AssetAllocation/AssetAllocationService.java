@@ -55,11 +55,24 @@ public class AssetAllocationService {
 			  	assetReq.setAssetId(request.getAssetId());
 			  	assetReq.setEmpId(emp.getEmpId());
 			  	assetAllocationRepository.save(assetReq);
-		        return "Asset Allocation Request created successfully";
+		        return "Asset allocation request created successfully";
 		 	}
 		
 		 
 	 }
+	
+	//This method will be used by employee to get all asset requests.
+	 
+			public List<AssetAllocation> getAllAssetRequestForEmployee(Integer empId){
+				
+				Employee emp = employeeService.getEmployeeById(empId);
+				
+				  List<AssetAllocation> assetRequestList = assetAllocationRepository.findByEmployeeId(empId);
+			    
+			        return assetRequestList;
+				
+			 }
+			
 	 
 	//this will be called by admin to allocate asset
 	    public String changeAssetRequestStatus(ChangeAssetAllocationStatusRequest request) {
@@ -86,21 +99,11 @@ public class AssetAllocationService {
 	    	 
 	    	 assetAllocationRepository.save(allocationRequest);
 	    	
-	        return "Assets request updated successfully";
+	        return "Asset request updated successfully";
 	    }
 	    
 	    
-		 //This method will be used by employee to get all asset requests.
 		 
-		public List<AssetAllocation> getAllAssetRequestForEmployee(Integer empId){
-			
-			employeeService.getEmployeeById(empId);
-			
-			  List<AssetAllocation> assetRequestList = assetAllocationRepository.findByEmployeeId(empId);
-		    
-		        return assetRequestList;
-			
-		 }
 		 
 	    
 }

@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.josh.asset_managment_system.Asset.Asset;
 import com.josh.asset_managment_system.exception.RecordNotFoundException;
 
 @Service
@@ -15,7 +14,7 @@ public class EmployeeService {
     private EmployeeRepository employeeRepository;
     
     @Autowired
-	private BCryptPasswordEncoder encoder;
+	 public BCryptPasswordEncoder encoder;
 	
     //called by admin to create employee.
 	 public Employee createEmployee(CreateEmployeeRequest request){
@@ -26,19 +25,47 @@ public class EmployeeService {
 	      
 	       return employeeRepository.save(emp);
 	    }
-	 //delete employee from db
-	 public String deleteEmployee(String userName){
-	       Employee emp = employeeRepository.findByEmployeeName(userName).orElseThrow(() ->
-	       	new RecordNotFoundException("Employee not found")
-     );
-	       employeeRepository.delete(emp);
-	       return "Employee Deleted successfully";
-	 }
 	 
 	 //this request is called by admin to get all employees
 	 public List<Employee> getAllEmployeeList() {
 	        return employeeRepository.findAll();
 	  }
+	 
+	 
+	 //update  employee profile.called by employee only
+	 public Employee getEmployee(String userName){
+	       Employee emp = employeeRepository.findByEmployeeName(userName);
+	       if (emp == null) {
+	    	   throw new RecordNotFoundException("Employee not found");
+	       }
+	     
+	       return emp;
+	 }
+	 
+	//get single asset to check asset exist. this is called by employee.
+	    
+	    public Employee getEmployeeById(Integer empId) {
+	    	 Employee employee = employeeRepository.findById(empId).orElseThrow(() ->
+		       	new RecordNotFoundException("Employee not found")
+	    	);
+	    	 
+	    	 return employee;
+	    }
+	 
+	    
+	 //delete employee from db
+	 public String deleteEmployee(String userName){
+	       Employee emp = employeeRepository.findByEmployeeName(userName);
+	       
+	       if (emp == null) {
+	    	   throw new RecordNotFoundException("Employee not found");
+	       }
+
+	       employeeRepository.delete(emp);
+	       return "Employee deleted successfully";
+	 }
+	 
+	
 	 
 	 //update  employee profile.called by employee only
 	 public String updateEmployeeProfile(UpdateEmployeeProfileRequest request){
@@ -58,21 +85,5 @@ public class EmployeeService {
 	       return "Profile updated successfully";
 	 }
 	 
-	 //update  employee profile.called by employee only
-	 public Employee getEmployee(String userName){
-	       Employee emp = employeeRepository.findByEmployeeName(userName).orElseThrow(() ->
-	       	new RecordNotFoundException("Employee not found")
-     );
-	     
-	       return emp;
-	 }
-	 
-	//get single asset to check asset exist. this is called by employee.
-	    
-	    public void getEmployeeById(Integer empId) {
-	    	 Employee employee = employeeRepository.findById(empId).orElseThrow(() ->
-		       	new RecordNotFoundException("Employee not found")
-	  );
-	    }
-	 
+	
 }

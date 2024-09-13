@@ -2,7 +2,6 @@ package com.josh.asset_managment_system.Admin;
 
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -23,22 +22,20 @@ public class AdminService implements UserDetailsService {
 	@Autowired EmployeeRepository employeeRepository;
 	
 	@Autowired
-	private BCryptPasswordEncoder passwordEncoder;
-	//check and create dmin user at application startup
+	 BCryptPasswordEncoder passwordEncoder;
+	//check and create admin user at application startup
 	public String createAdminUser() {
 		
 				List<Admin>  adminList = adminRepository.findAll();
 				
 				if (!adminList.isEmpty()) {
-					System.out.println("Admin present");
-					return "Admin Present";
+					return "Admin present";
 				}
 					Admin newAdmin = new Admin();
 					newAdmin.setUserName("admin");
 					newAdmin.setPassword(passwordEncoder.encode("password123"));
 					adminRepository.save(newAdmin);
-					System.out.println("Admin account created");
-					return "Admin Created";
+					return "Admin created";
 	}
 
 	@Override
@@ -49,8 +46,8 @@ public class AdminService implements UserDetailsService {
 			return  new CustomAdmin(admin);
 			
 		} else {
-			 Optional <Employee> optionalEmp = employeeRepository.findByEmployeeName(username);
-			 	Employee emp = optionalEmp.get();
+			 Employee emp = employeeRepository.findByEmployeeName(username);
+			 	
 	            if (emp != null) {
 	            	return new CustomAdmin(emp);
 	            }

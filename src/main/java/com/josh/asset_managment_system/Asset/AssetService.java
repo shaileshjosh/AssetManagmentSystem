@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
-import com.josh.asset_managment_system.Employee.Employee;
 import com.josh.asset_managment_system.Employee.EmployeeRepository;
 import com.josh.asset_managment_system.exception.RecordNotFoundException;
 @Service
@@ -21,20 +20,56 @@ public class AssetService {
 
     
     //create asset record in the database. this is called by admin
-    public Asset createAsset(String name){
+    public String createAsset(String name){
         Asset asset= new Asset();
         asset.setAssetName(name);
-        return assetRepository.save(asset);
+        assetRepository.save(asset);
+        return "Asset created successfully";
     }
+    
+//get single asset to check asset exist. this is called by employee.
+    
+    public Asset getAssetsById(Integer assetId) {
+    	 Asset asset = assetRepository.findById(assetId).orElseThrow(() ->
+	       	new RecordNotFoundException("Asset not found")
+	       	);
+    
+        return asset;
+    }
+    
 
     //get all assets from database. this is called by admin.
     public List<Asset> getAllAssets() {
         return assetRepository.findAll();
     }
+    
+    //update asset record from database. this is called by admin.
+    
+    public String updateAsset(UpdateAssetRequest request) {
+    	
+    	Asset asset = assetRepository.findById(request.getAssetId()).orElseThrow(() ->
+       	new RecordNotFoundException("Asset not found"));
+        asset.setAssetName(request.getAssetName());
+        assetRepository.save(asset);
+        return "Asset updated successfully";
+    }
+    
+    
+//delete asset record from database. this is called by admin.
+    
+    public String deleteAsset(Integer assetId) {
+
+    	Asset asset = assetRepository.findById(assetId).orElseThrow(() ->
+       	new RecordNotFoundException("Asset not found")
+       	);
+        assetRepository.delete(asset);
+       return "Asset deleted successfully";
+    }
+   
+    
 
     //allocate asset to the employee. this is called by admin.
     public boolean allocateAsset(AssignAssetRequest requestAsset) {
-
     	Asset asset = assetRepository.findById(requestAsset.getAssetId()).orElseThrow(() ->
        	new RecordNotFoundException("Asset not found"));
     	if (asset.getEmpId() != null) {
@@ -48,47 +83,16 @@ public class AssetService {
   //get allocated assets to specific employee. this is called by employee.
     
     public List<Asset> getEmployeeAssets(Integer empId) {
-    	 Employee emp = employeeRepository.findById(empId).orElseThrow(() ->
+    	 employeeRepository.findById(empId).orElseThrow(() ->
 	       	new RecordNotFoundException("Employee not found")
   );
-        Optional<List<Asset>> dbAssetList = assetRepository.findByEmployeeId(empId);
-        List<Asset> assetList = dbAssetList.get();
-    
-        return assetList;
+        List<Asset> dbAssetList = assetRepository.findByEmployeeId(empId);
+        
+        return dbAssetList;
     }
     
-//get single asset to check asset exist. this is called by employee.
-    
-    public Asset getAssetsById(Integer assetId) {
-    	 Asset asset = assetRepository.findById(assetId).orElseThrow(() ->
-	       	new RecordNotFoundException("Asset not found")
-  );
-    
-        return asset;
-    }
-    
-    
-  //delete asset record from database. this is called by admin.
-    
-    public void deleteAsset(Integer assetId) {
 
-        Optional<Asset> dbAsset = assetRepository.findById(assetId);
-        Asset asset = dbAsset.get();
-        assetRepository.delete(asset);
-    }
-    
-    
-    //update asset record from database. this is called by admin.
-    
-    public String updateAsset(UpdateAssetRequest request) {
-    	
-    	Asset asset = assetRepository.findById(request.getAssetId()).orElseThrow(() ->
-       	new RecordNotFoundException("Asset not found"));
-        asset.setAssetName(request.getAssetName());
-        assetRepository.save(asset);
-        return "Asset updated successfully";
-    }
-    
+  
  //update asset record from database. this is called by admin.
     
     public List<Asset> searchAssets(String assetName) {
